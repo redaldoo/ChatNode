@@ -10,25 +10,11 @@ var HOST_2 = "localhost";
 
 const PORT_SERVER_REGISTER = 7000
 
-const users = []
+let users = []
 
-var optionClient1 = {
-  port: PORT_CLIENTONE,
-  hostname: HOST_1,
-  host: HOST_1 + ":" + PORT_CLIENTONE,
-  path: "",
-  method: "",
-};
 
-var optionClient2 = {
-  port: PORT_CLIENTTWO,
-  hostname: HOST_2,
-  host: HOST_2 + ":" + PORT_CLIENTTWO,
-  path: "",
-  method: "",
-};
 
-const checkUsername = (username) => {
+const UsernameCheck = (username) => {
 
   const user = users.find(element => element.username == username)
 
@@ -51,7 +37,8 @@ setInterval(function () {
 
     });
   req.on('error', function (error) {
-    delete users;
+    users = users.filter(user => user.port != 8081);
+    
   });
   req.end();
 
@@ -66,7 +53,7 @@ setInterval(function () {
 
     });
   req.on('error', function (error) {
-    delete users;
+    users = users.filter(user => user.port != 8090);
   });
   req.end();
 
@@ -98,10 +85,10 @@ var RegisterServerRequestHandler = function (req, res) {
 
         const user = JSON.parse(body)
         if (user instanceof Object) {
-          const isUsernameExist = checkUsername(user.username)
+          const isUsernameExist = UsernameCheck(user.username)
 
           if (isUsernameExist) {
-            res.end(JSON.stringify({ message: "username existe dèja" }));
+            res.end(JSON.stringify({ message: "username does exist" }));
           }
           else {
         
@@ -111,36 +98,7 @@ var RegisterServerRequestHandler = function (req, res) {
         }
         else {
           res.end(JSON.stringify({ message: "error data  type " }));
-          //   }if(req.url == "/ping"){
-          //       if (users == 0){
-          //         console.log("no users found");
-          //       }else{
-          //       for (i =0 ; i > users.length ; i++){
 
-          //       setInterval(function(){ 
-          //           optionClient1.path = path;
-          //           optionClient1.method = req.method;
-
-          //           const request = http.request(optionClient1, function (response) {
-          //             var body = "";
-          //             response.on("error", function (e) {
-          //               console.log(e);
-          //               res.writeHead(500, {
-          //                 "Content-type": "application/json",
-          //               });
-          //               res.end(e);
-          //             });
-          //              response.on("end", function () {
-          //               res.writeHead(200, {
-          //                 "Content-type": "application/json",
-          //               });
-          //             });
-          //           });
-          //       }, 2000);
-          //   }
-
-
-          // }
         }
       });
 
